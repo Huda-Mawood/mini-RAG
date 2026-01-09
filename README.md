@@ -14,4 +14,19 @@ this a minimal implementation of the RAG Model for question answering
 ```bash
     $conda activate mini-rag-app
 ```
+## Installation
+### Install the required packages
+```bash
+$pip install -r requirements.txt
+```
+### setup the environments variables
+```bash
+$ cp .env.example .env
+```
+
+
+set your environment variables in the `.env` file. like `OPENAI_API_KEY` value
+
+
+
 
