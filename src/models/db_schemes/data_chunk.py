@@ -1,15 +1,13 @@
-from pydantic import BaseModel,Field,validator 
+from pydantic import BaseModel, Field
 from typing import Optional
-from bson.objectid import ObjectId
 
 class DataChunk(BaseModel):
-    _id:Optional[ObjectId]
-    chunk_text:str=Field(...,min_length=1)
-    chunk_metadata:dict
-    chunk_order:int=Field(...,gt=0)
-    chunk_project_id:ObjectId
+    id: Optional[str] = Field(default=None, alias="_id")
+    chunk_text: str = Field(..., min_length=1)
+    chunk_metadata: dict
+    chunk_order: int = Field(..., gt=0)
+    chunk_project_id: str
 
-
-    class config:
-        arbitrary_types_allowed=True    # to allow any type can't recognized by pydantic
-
+    model_config = {
+        "populate_by_name": True
+    }
