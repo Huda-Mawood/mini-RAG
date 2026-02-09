@@ -18,4 +18,14 @@ class Project(BaseModel):
         populate_by_name=True
     )   # to allow any type can't recognized by pydantic
 
+    @classmethod
+    def get_indexes(cls):
+        return[
+            {
+                'key':[('project_id',1)],
+                'name':'project_id_index_1',
+                'unique':True
+            }
+        ]
+
 
