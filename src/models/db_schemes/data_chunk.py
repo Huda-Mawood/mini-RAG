@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
+from bson import ObjectId
 
 class DataChunk(BaseModel):
     id: Optional[str] = Field(default=None, alias="_id")
@@ -7,9 +8,12 @@ class DataChunk(BaseModel):
     chunk_metadata: dict
     chunk_order: int = Field(..., gt=0)
     chunk_project_id: str
+    chunk_asset_id:str
+
 
     model_config = {
-        "populate_by_name": True
+           "populate_by_name": True,
+           "arbitrary_types_allowed": True
     }
 
     @classmethod

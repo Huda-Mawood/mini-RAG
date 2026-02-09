@@ -22,6 +22,9 @@ class ProcessController(BaseController):
             self.project_path,
             file_id
         )
+        if not os.path.exists(file_path):
+            return None
+        
         if file_extension==ProcessingEnum.TXT.value:
             return TextLoader(file_path,encoding='utf-8')
         if file_extension==ProcessingEnum.PDF.value:
@@ -31,7 +34,11 @@ class ProcessController(BaseController):
     
     def get_file_content(self,file_id:str):
         loader=self.get_file_loader(file_id=file_id)
-        return loader.load()
+        if loader:
+            return loader.load()
+        
+        else:
+            return None
     
     def process_file_content(self,file_content:list,file_id:str,chunk_size:int=100,chunk_overlap:int=20):
         txt_splitter=RecursiveCharacterTextSplitter(
