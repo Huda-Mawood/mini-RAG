@@ -7,6 +7,9 @@ FILE_DEFAULT_CHUNK_SIZE=512000 #512KB
 MONGODB_URL="mongodb://localhost:27027"
 MONGODB_DATABASE="mini-rag"
 
+
+#===========LLM Config =================
+
 GENERATION_BACKEND=
 EMBEDDING_BACKEND=
 
@@ -21,3 +24,9 @@ EMBEDDING_MODEL_SIZE=
 INPUT_DAFAULT_MAX_CHARACTERS=
 GENERATION_DAFAULT_MAX_TOKENS=
 GENERATION_DAFAULT_TEMPERATURE=
+
+
+#===========Vector DB Config =================
+VECTOR_DB_BACKEND="QDRANT" # same name the enum in VectorDBType
+VECTOR_db_PATH="qdrant_db" # the path to store the vector db, you can change it according to your needs
+VECTOR_DB_DISTANCE_METHOD="Cosine" # the distance method to use for similarity search, you can change it according to your needs, the supported methods are: Cosine, Euclidean, DotProduct

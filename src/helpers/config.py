@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     GENERATION_DEFAULT_MAX_TOKENS:str=None
     GENERATION_DEFAULT_TEMPERATURE:str=None
 
+    VECTOR_DB_BACKEND:str
+    VECTOR_DB_PATH:str
+    VECTOR_DB_DISTANCE_METHOD:str=None
+
 
     
     model_config = SettingsConfigDict(
