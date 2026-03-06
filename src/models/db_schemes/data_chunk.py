@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from bson import ObjectId
 
@@ -9,7 +9,13 @@ class DataChunk(BaseModel):
     chunk_order: int = Field(..., gt=0)
     chunk_project_id: str
     chunk_asset_id:str
-
+    
+    @field_validator("id", mode="before")  # ✅ حول ObjectId لـ string
+    @classmethod
+    def convert_objectid(cls, v):
+        if isinstance(v, ObjectId):
+            return str(v)
+        return v
 
     model_config = {
            "populate_by_name": True,

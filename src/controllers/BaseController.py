@@ -20,7 +20,7 @@ class BaseController:
     
     def get_database_path(self,db_name:str):
 
-        database_path=os.join.path(
+        database_path=os.path.join(
             self.database_dir,
             db_name
         )

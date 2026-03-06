@@ -95,7 +95,31 @@ class CoHereProvider(LLMInterface):
 
 
         
-        
+    def embed_many(self, texts: list, document_type: str = None):
+        if not self.client:
+            self.logger.error("CoHere client not initialized.")
+            return None
+
+        if not self.embedding_model_id:
+            self.logger.error("Embedding model for CoHere not set")
+            return None
+
+        input_type = CoHereEnums.DOCUMENT
+        if document_type == DocumentTypeEnums.QUERY.value:
+            input_type = CoHereEnums.QUERY
+
+        response = self.client.embed(
+            model=self.embedding_model_id,
+            texts=[self.process_Text(t) for t in texts],
+            input_type=input_type,
+            embedding_types=["float"],
+        )
+
+        if not response or not response.embeddings or not response.embeddings.float_:
+            self.logger.error("Error while batch embedding texts with CoHere")
+            return None
+
+        return response.embeddings.float_  # ✅ List[List[float]]  
 
     def construct_prompt(self,prompt:str,role:str):
         return {

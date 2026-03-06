@@ -18,6 +18,9 @@ class QdrantDBProvider(VectorDBInterface):
         elif distance_method==DistantMethodEnums.DOT.value:
             self.distance_method=models.Distance.DOT 
 
+        else:
+            self.distance_method = models.Distance.COSINE # default distance method is cosine
+
         self.logger=logging.getLogger(__name__)
 
     def connect(self):
@@ -37,7 +40,7 @@ class QdrantDBProvider(VectorDBInterface):
     
     def delete_collection(self,collection_name:str):
         if self.is_collect_existed(collection_name):
-            return 
+             return self.client.delete_collection(collection_name=collection_name)
         
     def create_collection(self,collection_name:str,
                           embedding_size:int,
@@ -47,7 +50,7 @@ class QdrantDBProvider(VectorDBInterface):
             _=self.delete_collection(collection_name=collection_name)  #_= is variable to receive the return value of delete_collection, but we don't care about it, so we use _ to indicate that we don't care about it
 
         if not self.is_collect_existed(collection_name=collection_name):
-            _=self.create_collection(
+            _=self.client.create_collection(
                 collection_name=collection_name,
                 vectors_config=models.VectorParams(
                     size=embedding_size,
@@ -67,10 +70,12 @@ class QdrantDBProvider(VectorDBInterface):
              return False 
          
         try:
-            _=self.client.upload_records(
+            _=self.client.upsert(
                     collection_name=collection_name,
-                    records=[
-                        models.Record(
+                    points=[
+                        
+                        models.PointStruct(
+                            id=[record_id] if record_id else None,
                             vector=vector,
                             payload={  # the payload is the metadata of the record, you can store any information you want in the payload, such as the original text, the source of the data, etc. In this case, we store the original text in the payload with the key "text" and metadata in the payload with the key "metadata"
                                 "text":text,
@@ -94,18 +99,20 @@ class QdrantDBProvider(VectorDBInterface):
             metadata=[None]*len(texts)
 
         if record_ids is None:
-            record_ids=[None]*len(texts)
+            record_ids=list(range(0,len(texts)))
 
         
-        for i in range(0,range(texts),batch_size):
+        for i in range(0, len(texts), batch_size):
             batch_end=i+batch_size
             batch_texts=texts[i:batch_end]
             batch_vectors=vectors[i:batch_end]
             batch_metadata=metadata[i:batch_end]
+            batch_record_ids=record_ids[i:batch_end]
 
-            batch_records=[
+            batch_points =[
 
-                models.Record(
+                models.PointStruct(
+                    id=batch_record_ids[x] if batch_record_ids[x] is not None else x,
                     vector=batch_vectors[x],
                     payload={
                         "text":batch_texts[x],
@@ -116,9 +123,9 @@ class QdrantDBProvider(VectorDBInterface):
                 for x in range(len(batch_texts))
             ]
             try:
-                _=self.client.upload_records(
+                _=self.client.upsert(
                     collection_name=collection_name,
-                    vectors=batch_records
+                    points=batch_points
                 )
             except Exception as e:
                 self.logger.error(f"Failed to insert batch records into collection {collection_name}, error: {e}")
@@ -131,11 +138,11 @@ class QdrantDBProvider(VectorDBInterface):
                          limit:int=5 # the number of results to return
                          
                          ):
-        return self.client.search(
+        return self.client.query_points(
             collection_name=collection_name,
-            query_vector=vector,
+            query=vector,
             limit=limit
-        )
+        ).points
     
 
 
