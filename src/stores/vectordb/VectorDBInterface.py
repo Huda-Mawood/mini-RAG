@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List 
+from models.db_schemes import ReterievedDocument
 class VectorDBInterface(ABC):
 
     @abstractmethod
@@ -52,7 +53,7 @@ class VectorDBInterface(ABC):
                          vector:list,
                          limit:int=5 # the number of results to return
                          
-                         ):
+                         ) -> List[ReterievedDocument]:
         pass
 
 

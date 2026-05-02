@@ -31,3 +31,7 @@ class DataChunk(BaseModel):
                 'unique':False  # because multiple chunks can belong to the same project
             }
         ]
+    
+class ReterievedDocument(BaseModel):
+    text:str
+    score:float

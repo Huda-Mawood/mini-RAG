@@ -7,6 +7,7 @@ from helpers.config import get_settings
 from stores.llm.LLMProviderFactory import LLMProviderFactory
 from stores.vectordb.VectorDBProviderFactory import VectorDBProviderFactory
 
+
 app=FastAPI()
 
 async def startup_span():

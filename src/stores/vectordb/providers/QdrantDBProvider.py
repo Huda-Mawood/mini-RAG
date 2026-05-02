@@ -3,6 +3,7 @@ from ..VectorDBInterface import VectorDBInterface
 from ..VectorDBEnums import DistantMethodEnums
 from typing import List 
 import logging 
+from models.db_schemes import ReterievedDocument
 
 class QdrantDBProvider(VectorDBInterface):
     def __init__(self,db_path:str,
@@ -138,11 +139,23 @@ class QdrantDBProvider(VectorDBInterface):
                          limit:int=5 # the number of results to return
                          
                          ):
-        return self.client.query_points(
+        results= self.client.query_points(
             collection_name=collection_name,
             query=vector,
             limit=limit
         ).points
+
+        if not results or len(results)==0:
+            return None
+        
+        return [
+            ReterievedDocument(**{
+                "score":result.score,
+                "text":result.payload["text"]
+            })
+
+            for result in results
+        ]
     
 
 
