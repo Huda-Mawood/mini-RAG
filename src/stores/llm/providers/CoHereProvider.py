@@ -23,6 +23,8 @@ class CoHereProvider(LLMInterface):
             api_key=self.api_key
         )
 
+        self.enums=CoHereEnums
+
         self.logger=logging.getLogger(__name__)
 
     def set_generation_model(self,model_id:str):
@@ -53,12 +55,18 @@ class CoHereProvider(LLMInterface):
             )
 
         )
-        response=self.client.chat(
-            model=self.generation_model_id,
-            messages=self.process_Text(prompt),
-            max_tokens=max_output_tokens,
-            temperature=temperature
-        )
+        response = self.client.chat(
+        model=self.generation_model_id,
+        messages=chat_history + [
+            {
+                "role": "user",
+                "content": self.process_Text(prompt)
+            }
+        ],
+        max_tokens=max_output_tokens,
+        temperature=temperature
+
+)
 
         if not response or not response.message or not response.message.content:
             self.logger.error("Error while generating text with cohere")
@@ -67,7 +75,7 @@ class CoHereProvider(LLMInterface):
     
     def embed_text(self,text:str,document_type:str=None):
         if not self.client:
-            self.logger.error("OpenAI client not initialized.")
+            self.logger.error("CoHere client not initialized.")
             return None
         
         if not self.embedding_model_id:
@@ -124,7 +132,7 @@ class CoHereProvider(LLMInterface):
     def construct_prompt(self,prompt:str,role:str):
         return {
             "role":role,
-            "text":self.process_text(prompt)
+            "content":self.process_Text(prompt)
         }
 
     
