@@ -14,6 +14,10 @@ this a minimal implementation of the RAG Model for question answering
 ```bash
     $conda activate mini-rag-app
 ```
+### (Optional) Setup you command line interface for better readability
+```bash
+$ export PS1="\[\033[01;32m\]\u@\h:\w\n\[\033[00m\]\$ "
+```
 ## Installation
 ### Install the required packages
 ```bash
@@ -41,6 +45,9 @@ $ uvicorn main:app --reload --host 0.0.0.0 --port 5000
 ## POSTMAN collection
 Download the postman collection from [/assets/mini-rag-app.postman_collection.json](/assets/mini-rag-app.postman_collection.json)
 
+
+### (Optional) Run Ollama Local LLM Server using Colab + Ngrok
+[View Notebook](https://github.com/Huda-Mawood/mini-RAG/blob/main/src/run_ollama_server.ipynb)
 
 
 
